@@ -1,0 +1,102 @@
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAM              0x20000000         0x0001c000         xrw
+CCRAM            0x2001c000         0x00004000         xrw
+FLASH            0x08000000         0x00080000         xr
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD startup.o
+LOAD main.o
+START GROUP
+LOAD /home/james/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m/nofp/libgcc.a
+LOAD /home/james/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libg.a
+LOAD /home/james/st/stm32cubeclt_1.19.0/GNU-tools-for-STM32/bin/../lib/gcc/arm-none-eabi/13.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m/nofp/libc.a
+END GROUP
+                0x2001c000                        _eram = (ORIGIN (RAM) + LENGTH (RAM))
+                0x2001c000                        _stack = _eram
+
+.text           0x08000000      0x730
+ *(.isr_vector)
+ .isr_vector    0x08000000      0x1c0 startup.o
+ *(.text*)
+ .text          0x080001c0       0xb8 startup.o
+                0x080001c0                bss_cleanup
+                0x080001f4                data_init
+                0x08000234                isr_reset
+                0x08000246                isr_hardfault
+ .text          0x08000278      0x4b8 main.o
+                0x08000278                GPIO_SetPin
+                0x080002be                GPIO_TogglePin
+                0x080002e4                GPIO_PinMode
+                0x08000372                GPIO_ReadPin
+                0x0800039e                GPIO_AFMode
+                0x08000416                RCC_EnableGPIO
+                0x080004ac                RCC_EnableTIM
+                0x080005d0                GPTIMA_SetPrescaler
+                0x080005ea                GPTIMA_SetAutoReload
+                0x08000604                GPTIMA_EnableCounter
+                0x08000634                GPTIMA_DutyCycle
+                0x0800068c                GPTIMA_ResetCounter
+                0x080006aa                main
+ *(.rodata*)
+                0x08000730                        . = ALIGN (0x4)
+                0x08000730                        _etext = .
+
+.glue_7         0x08000730        0x0
+ .glue_7        0x08000730        0x0 linker stubs
+
+.glue_7t        0x08000730        0x0
+ .glue_7t       0x08000730        0x0 linker stubs
+
+.vfp11_veneer   0x08000730        0x0
+ .vfp11_veneer  0x08000730        0x0 linker stubs
+
+.v4_bx          0x08000730        0x0
+ .v4_bx         0x08000730        0x0 linker stubs
+
+.iplt           0x08000730        0x0
+ .iplt          0x08000730        0x0 startup.o
+
+.rel.dyn        0x08000730        0x0
+ .rel.iplt      0x08000730        0x0 startup.o
+
+.data           0x20000000        0x0 load address 0x08000730
+                0x20000000                        _sdata = .
+ *(.data*)
+ .data          0x20000000        0x0 startup.o
+ .data          0x20000000        0x0 main.o
+                0x20000000                        . = ALIGN (0x4)
+                0x20000000                        _edata = .
+                0x08000730                        _sidata = LOADADDR (.data)
+
+.igot.plt       0x20000000        0x0 load address 0x08000730
+ .igot.plt      0x20000000        0x0 startup.o
+
+.bss            0x20000000        0x0 load address 0x08000730
+                0x20000000                        _sbss = .
+ *(.bss*)
+ .bss           0x20000000        0x0 startup.o
+ .bss           0x20000000        0x0 main.o
+ *(COMMON)
+                0x20000000                        . = ALIGN (0x4)
+                0x20000000                        _ebss = .
+OUTPUT(firmware.elf elf32-littlearm)
+LOAD linker stubs
+
+.comment        0x00000000       0x43
+ .comment       0x00000000       0x43 startup.o
+                                 0x44 (size before relaxing)
+ .comment       0x00000043       0x44 main.o
+
+.ARM.attributes
+                0x00000000       0x2e
+ .ARM.attributes
+                0x00000000       0x2e startup.o
+ .ARM.attributes
+                0x0000002e       0x2e main.o

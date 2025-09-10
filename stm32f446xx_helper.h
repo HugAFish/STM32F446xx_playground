@@ -1,0 +1,184 @@
+#include "stm32f446xx_map.h"
+#include <stdint.h>
+#include <stdbool.h>
+
+/*
+Just like everything else that may be published:
+!!WARNING!! I don't know what I am doing, use at own your risk!!
+this is a helper library for the STM32F446 microcontroller
+it MAY or MAY NOT be comprehensive and incorrect
+
+*/
+
+
+/*GPIO
+GPIO is split into ports A to H
+there is no unique GPIO struct as each port has the same register layout
+the GPIOx pointer is used to point to the specific port
+as of now, alternative functions dont have proper abstraction
+*/
+void GPIO_SetPin(GPIO_TypeDef *GPIOx, uint32_t PinNumber, bool Pin) {
+  if (Pin) {
+    GPIOx->BSRR |= (1 << PinNumber);
+  } else {
+    GPIOx->BSRR |= (1 << (PinNumber + 16));
+  }
+}
+
+void GPIO_TogglePin(GPIO_TypeDef *GPIOx, uint32_t PinNumber) {
+  GPIOx->ODR ^= (1 << PinNumber);
+}
+
+void GPIO_PinMode(GPIO_TypeDef *GPIOx, uint32_t PinNumber, uint8_t Mode) {
+  GPIOx->MODER &= ~(3 << (PinNumber * 2));
+  switch (Mode) {
+    case 0:  // Input
+      break;
+    case 1:  // Output
+      GPIOx->MODER |= (1 << (PinNumber * 2));
+      break;
+    case 2:  // Alternate function
+      GPIOx->MODER |= (2 << (PinNumber * 2));
+      break;
+    case 3:  // Analog
+      GPIOx->MODER |= (3 << (PinNumber * 2));
+      break;
+    default:
+      break;
+  }
+}
+
+bool GPIO_ReadPin(GPIO_TypeDef *GPIOx, uint32_t PinNumber) {
+  return (GPIOx->IDR & (1 << PinNumber)) != 0;
+}
+
+void GPIO_AFMode(GPIO_TypeDef *GPIOx, uint32_t PinNumber, uint8_t AF) {
+  if (PinNumber < 8) {
+    GPIOx->AFRL &= ~(0xF << (PinNumber * 4));
+    GPIOx->AFRL |= (AF << (PinNumber * 4));
+  } else {
+    GPIOx->AFRH &= ~(0xF << ((PinNumber - 8) * 4));
+    GPIOx->AFRH |= (AF << ((PinNumber - 8) * 4));
+  }
+}
+
+/*RCC
+enable functions may be moved to their respective peripheral sections
+*/
+void RCC_EnableGPIO(char port) {
+  switch (port) {
+    case 'A':
+      RCC->AHB1ENR |= (1 << 0);
+      break;
+    case 'B':
+      RCC->AHB1ENR |= (1 << 1);
+      break;
+    case 'C':
+      RCC->AHB1ENR |= (1 << 2);
+      break;
+    case 'D':
+      RCC->AHB1ENR |= (1 << 3);
+      break;
+    case 'E':
+      RCC->AHB1ENR |= (1 << 4);
+      break;
+    case 'F':
+      RCC->AHB1ENR |= (1 << 5);
+      break;
+    default:
+      break;
+  }
+}
+void RCC_EnableTIM(int tim) {
+  switch (tim) {
+    case 1:
+      RCC->APB2ENR |= (1 << 0);
+      break;
+    case 2:
+      RCC->APB1ENR |= (1 << 0);
+      break;
+    case 3:
+      RCC->APB1ENR |= (1 << 1);
+      break;
+    case 4:
+      RCC->APB1ENR |= (1 << 2);
+      break;
+    case 5:
+      RCC->APB1ENR |= (1 << 3);
+      break;
+    case 6:
+      RCC->APB1ENR |= (1 << 4);
+      break;
+    case 7:
+      RCC->APB1ENR |= (1 << 5);
+      break;
+    case 8:
+      RCC->APB2ENR |= (1 << 1);
+      break;
+    case 9:
+      RCC->APB2ENR |= (1 << 16);
+      break;
+    case 10:
+      RCC->APB2ENR |= (1 << 17);
+      break;
+    case 11:
+      RCC->APB2ENR |= (1 << 18);
+      break;
+    case 12:
+      RCC->APB1ENR |= (1 << 6);
+      break;
+    case 13:
+      RCC->APB1ENR |= (1 << 7);
+      break;
+    case 14:
+      RCC->APB1ENR |= (1 << 8);
+      break;
+    default:
+      break;
+  }
+}
+/** universal timer functions 
+this section is going to be seperated due to the timers having different register layouts
+I have desided to call the advanced timers ATIM and the general purpose timers GPTIMA or GPTIMB and teh basic timers BTIM
+Advanced Timers (ATIM) are TIM1 and TIM8
+General Purpose Timers (GPTIMA) A are TIM2 to TIM5
+General Purpose Timers (GPTIMB) B are TIM9 to TIM14
+Basic Timers (BTIM) are TIM6 and TIM7
+functions that are specific to a timer type will be in their own section
+*/
+void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
+  TIMx->PSC = Prescaler;
+}
+void GPTIMA_SetAutoReload(GPTIMA_TypeDef *TIMx, uint32_t AutoReload) {
+  TIMx->ARR = AutoReload; //Not all timers are 32 bit, some are 16 bit
+}
+void GPTIMA_EnableCounter(GPTIMA_TypeDef *TIMx) {
+  RCC->APB1ENR |= (1 << 0);
+  TIMx->CR1 |= (1 << 0);
+}
+void GPTIMA_DutyCycle(GPTIMA_TypeDef *TIMx, int channel, uint32_t DutyCycle) {
+  //The duty cycle is not a percentage but a value between 0 and the auto-reload value
+  switch (channel) {
+    case 1:
+      TIMx->CCR1 = DutyCycle;
+      break;
+    case 2:
+      TIMx->CCR2 = DutyCycle;
+      break;
+    case 3:
+      TIMx->CCR3 = DutyCycle;
+      break;
+    case 4:
+      TIMx->CCR4 = DutyCycle;
+      break;
+    default:
+      break;
+  }
+}
+void GPTIMA_ResetCounter(GPTIMA_TypeDef *TIMx) {
+  TIMx->EGR |= 1;
+}
+void GPTIMA_Mode(GPTIMA_TypeDef *TIMx, uint8_t Mode, uint8_t Direction) {
+  TIMx->CR1 &= ~((3 << 5) | (1 << 4));  // Clear the bits
+  TIMx->CR1 |= (Mode << 5) | (Direction << 4);
+}

@@ -1,0 +1,14 @@
+This is a work in progress!!
+This is a completely(almost) from the ground up. 
+If you endup seeing this and know how to do something better, please let me know.
+Here is are links to the refrince materials
+https://www.st.com/resource/en/reference_manual/rm0390-stm32f446xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf
+and
+https://www.st.com/resource/en/datasheet/stm32f446mc.pdf
+
+Thank you to Artful Bytes on YouTube, his "How a Microcontrller srtats" video was a huge help. If you want to check it out, you can at https://www.youtube.com/watch?v=MhOba73z-dQ&t=1383s 
+
+note to self: 
+to compile startup: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -c stm32f446xx_startup.c -o startup.o
+to complie main: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -c myprogram.c -o main.o
+to build project: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -g -O0   startup.o main.o   -T stm32f446xx_linker.ld   -nostartfiles -Wl,-Map=output.map   -o firmware.elf (switch the .elf to .bin and remove -g for final build)
