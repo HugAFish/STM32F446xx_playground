@@ -13,7 +13,7 @@ TIM2->CCMR1 &= ~(0xFF << 0);      // Clear channel 1 settings
 TIM2->CCMR1 |=  (6 << 4);         // OC1M = 110 = PWM mode 1
 TIM2->CCMR1 |=  (1 << 3);         // OC1PE = 1
 TIM2->CCER |= (1 << 0);   // CC1E = enable output
-TIM2->CCER &= ~(1 << 1);  // CC1P = 0 = active high
+TIM2->CCER &= ~(1 << 1);  //
 
 
 GPTIMA_ResetCounter(TIM2);

@@ -42,6 +42,8 @@ void isr_hardfault(void) {
     // to catch hardfaults
 }
 
+void isr_
+
 typedef void (*isr_t)(void);
 #define IVT_SIZE 112U
 __attribute__((used, section(".isr_vector")))
