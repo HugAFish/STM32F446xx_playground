@@ -163,13 +163,23 @@ functions that are specific to a timer type will be in their own section
 void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
   TIMx->PSC = Prescaler;
 }
-void GPTIMA_SetAutoReload(GPTIMA_TypeDef *TIMx, uint32_t AutoReload, bool Buffer) {
-  if (Buffer) {
+void GPTIMA_SetAutoReload(GPTIMA_TypeDef *TIMx, uint32_t AutoReload) {
+  TIMx->ARR = AutoReload; //Not all timers are 32 bit, some are 16 bit
+}
+
+void GPTIMA_ARBufferCmd(GPTIMA_TypeDef *TIMx, bool Enable) {
+  if (Enable) {
     TIMx->CR1 |= (1 << 7); // ARPE = 1
   } else {
     TIMx->CR1 &= ~(1 << 7); // ARPE = 0
   }
-  TIMx->ARR = AutoReload; //Not all timers are 32 bit, some are 16 bit
+}
+void GPTIMA_CounterBuffer(GPTIMA_TypeDef *TIMx, bool Enable) {
+  if (Enable) {
+    TIMx->CR1 |= (1 << 8); // URS = 1
+  } else {
+    TIMx->CR1 &= ~(1 << 8); // URS = 0
+  }
 }
 void GPTIMA_EnableCounter(GPTIMA_TypeDef *TIMx) {
   //Must be called to enable the peripheral
@@ -244,7 +254,7 @@ both when the counter is counting up or down.
 }
 
 void GPTIMA_OutputMode(GPTIMA_TypeDef *TIMx, uint8_t channel, uint8_t Mode) {
-/*Sets the device as output and configures the output mode
+/*Sets the device channel as output and configures the output mode
 Available modes:
 0: Frozen - Use this mode to gerante a timing base without any output
 1: Active level on match - Set the output to active level when the counter matches the capture/compare register
@@ -259,25 +269,30 @@ TIMx_CNT>TIMx_CCR1 else active (OC1REF=1).
 else active. In downcounting, channel 1 is active (OC1REF=‘1) as long as
 TIMx_CNT>TIMx_CCR1 else inactive (OC1REF=0).
 */
+
   switch (channel) {
     case 1:
       TIMx->CCMR1 &= ~(0x7 << 4); // Clear OC1M bits
       TIMx->CCMR1 |= (Mode << 4);
+      TIMx->CCMR1 |= (0 << 0); // Set CC1S to output
       TIMx->CCER |= (1 << 0); // Enable output for channel 1
       break;
     case 2:
       TIMx->CCMR1 &= ~(0x7 << 12); // Clear OC2M bits
       TIMx->CCMR1 |= (Mode << 12);
+      TIMx->CCMR1 |= (0 << 8); // Set CC2S to output
       TIMx->CCER |= (1 << 4); // Enable output for channel 2
       break;
     case 3:
       TIMx->CCMR2 &= ~(0x7 << 4); // Clear OC3M bits
       TIMx->CCMR2 |= (Mode << 4);
+      TIMx->CCMR2 |= (0 << 0); // Set CC3S to output
       TIMx->CCER |= (1 << 8); // Enable output for channel 3
       break;
     case 4:
       TIMx->CCMR2 &= ~(0x7 << 12); // Clear OC4M bits
       TIMx->CCMR2 |= (Mode << 12);
+      TIMx->CCMR2 |= (0 << 8); // Set CC4S to output
       TIMx->CCER |= (1 << 12); // Enable output for channel 4
       break;
     default:

@@ -1,0 +1,14 @@
+# Ignore compiled binaries
+*.bin
+*.elf
+*.o
+*.map
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
+
+# Ignore temporary files
+*.tmp
+*.save
+*_backup.*
