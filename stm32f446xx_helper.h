@@ -6,7 +6,7 @@
 Just like everything else that may be published:
 !!WARNING!! I don't know what I am doing, use at own your risk!!
 this is a helper library for the STM32F446 microcontroller
-it MAY or MAY NOT be comprehensive and incorrect
+it MAY or MAY NOT be comprehensive and fully correct
 */
 /*
 High level abstraction functions for peripherals
@@ -151,7 +151,7 @@ void RCC_EnableTIM(int tim) {
       break;
   }
 }
-/** universal timer functions 
+/* universal timer functions 
 this section is going to be seperated due to the timers having different register layouts
 I have desided to call the advanced timers ATIM and the general purpose timers GPTIMA or GPTIMB and teh basic timers BTIM
 Advanced Timers (ATIM) are TIM1 and TIM8
@@ -163,28 +163,109 @@ functions that are specific to a timer type will be in their own section
 void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
   TIMx->PSC = Prescaler;
 }
-void GPTIMA_SetAutoReload(GPTIMA_TypeDef *TIMx, uint32_t AutoReload) {
+void GPTIMB_SetPrescaler(GPTIMB_TypeDef *TIMx, uint32_t Prescaler) {
+  TIMx->PSC = Prescaler;
+}
+void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
+  TIMx->PSC = Prescaler;
+}
+void ATIM_SetAutoReload(ATIM_TypeDef *TIMx, uint32_t AutoReload) {
   TIMx->ARR = AutoReload; //Not all timers are 32 bit, some are 16 bit
 }
+void BTIM_SetPrescaler(BTIM_TypeDef *TIMx, uint32_t Prescaler) {
+  TIMx->PSC = Prescaler;
+}
 
-void GPTIMA_ARBufferCmd(GPTIMA_TypeDef *TIMx, bool Enable) {
+void GPTIMA_ARBuffer(GPTIMA_TypeDef *TIMx, bool Enable) {
   if (Enable) {
     TIMx->CR1 |= (1 << 7); // ARPE = 1
   } else {
     TIMx->CR1 &= ~(1 << 7); // ARPE = 0
   }
 }
-void GPTIMA_CounterBuffer(GPTIMA_TypeDef *TIMx, bool Enable) {
+void GPTIMB_ARBuffer(GPTIMB_TypeDef *TIMx, bool Enable) {
   if (Enable) {
-    TIMx->CR1 |= (1 << 8); // URS = 1
+    TIMx->CR1 |= (1 << 7); // ARPE = 1
   } else {
-    TIMx->CR1 &= ~(1 << 8); // URS = 0
+    TIMx->CR1 &= ~(1 << 7); // ARPE = 0
   }
 }
-void GPTIMA_EnableCounter(GPTIMA_TypeDef *TIMx) {
-  //Must be called to enable the peripheral
-  RCC->APB1ENR |= (1 << 0);
-  TIMx->CR1 |= (1 << 0);
+void ATIM_ARBuffer(ATIM_TypeDef *TIMx, bool Enable) {
+  if (Enable) {
+    TIMx->CR1 |= (1 << 7); // ARPE = 1
+  } else {
+    TIMx->CR1 &= ~(1 << 7); // ARPE = 0
+  }
+}
+void BTIM_ARBuffer(BTIM_TypeDef *TIMx, bool Enable) {
+  if (Enable) {
+    TIMx->CR1 |= (1 << 7); // ARPE = 1
+  } else {
+    TIMx->CR1 &= ~(1 << 7); // ARPE = 0
+  }
+}
+
+void TIM_EnableCounter(uint8_t tim) {
+  switch (tim) {
+	case 1:
+	  RCC->APB2ENR |= (1 << 0);
+	  TIM1->CR1 |= 1;
+	  break;
+	case 2:
+	  RCC->APB1ENR |= (1 << 0);
+	  TIM2->CR1 |= 1;
+	  break;
+	case 3:
+	  RCC->APB1ENR |= (1 << 1);
+	  TIM3->CR1 |= 1;
+	  break;
+	case 4:
+	  RCC->APB1ENR |= (1 << 2);
+	  TIM4->CR1 |= 1;
+	  break;
+	case 5:
+	  RCC->APB1ENR |= (1 << 3);
+	  TIM5->CR1 |= 1;
+	  break;
+	case 6:
+	  RCC->APB1ENR |= (1 << 4);
+	  TIM6->CR1 |= 1;
+	  break;
+	case 7:
+	  RCC->APB1ENR |= (1 << 5);
+	  TIM7->CR1 |= 1;
+	  break;
+	case 8:
+	  RCC->APB2ENR |= (1 << 1);
+	  TIM8->CR1 |= 1;
+	  break;
+	case 9:
+	  RCC->APB2ENR |= (1 << 16);
+	  TIM9->CR1 |= 1;
+	  break;
+	case 10:
+	  RCC->APB2ENR |= (1 << 17);
+	  TIM10->CR1 |= 1;
+	  break;
+	case 11:
+	  RCC->APB2ENR |= (1 << 18);
+	  TIM11->CR1 |= 1;
+	  break;
+	case 12:
+	  RCC->APB1ENR |= (1 << 6);
+	  TIM12->CR1 |= 1;
+	  break;
+	case 13:
+	  RCC->APB1ENR |= (1 << 7);
+	  TIM13->CR1 |= 1;
+	  break;
+	case 14:
+	  RCC->APB1ENR |= (1 << 8);
+	  TIM14->CR1 |= 1;
+	  break;
+	default:
+	  break;
+  }
 }
 void GPTIMA_DutyCycle(GPTIMA_TypeDef *TIMx, uint8_t channel, uint32_t DutyCycle) {
   //The duty cycle is not a percentage but a value between 0 and the auto-reload value
@@ -222,7 +303,7 @@ void GPTIMA_Direction(GPTIMA_TypeDef *TIMx, uint8_t Mode, uint8_t Direction) {
   only when the counter is counting up.
   3: Center-aligned mode 3. The counter counts up and down alternatively. Output compare
   interrupt flags of channels configured in output (CCxS=00 in TIMx_CCMRx register) are set
-both when the counter is counting up or down.
+  both when the counter is counting up or down.
   */
   TIMx->CR1 &= ~(3 << 4); // Clear CMS bits
   TIMx->CR1 &= ~(1 << 3); // Clear DIR bit
@@ -272,8 +353,8 @@ TIMx_CNT>TIMx_CCR1 else inactive (OC1REF=0).
 
   switch (channel) {
     case 1:
-      TIMx->CCMR1 &= ~(0x7 << 4); // Clear OC1M bits
-      TIMx->CCMR1 |= (Mode << 4);
+      TIMx->CCMR1 &= ~(0x7 << 4); // Clears input output bits
+      TIMx->CCMR1 |= (Mode << 4); //Sets output mode as described above
       TIMx->CCMR1 |= (0 << 0); // Set CC1S to output
       TIMx->CCER |= (1 << 0); // Enable output for channel 1
       break;
@@ -299,4 +380,3 @@ TIMx_CNT>TIMx_CCR1 else inactive (OC1REF=0).
       break;
   }
 }
-
