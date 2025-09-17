@@ -52,6 +52,6 @@ static const isr_t vector_table[IVT_SIZE] = {
     isr_reset,
     0,
     isr_hardfault,
-    [44] = isr_TIM2,    //Todo: Add other ISRs here
+    [44] = isr_TIM2,    //Todo: Add other ISRs here, 
     
 };

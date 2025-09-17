@@ -166,9 +166,6 @@ void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
 void GPTIMB_SetPrescaler(GPTIMB_TypeDef *TIMx, uint32_t Prescaler) {
   TIMx->PSC = Prescaler;
 }
-void GPTIMA_SetPrescaler(GPTIMA_TypeDef *TIMx, uint32_t Prescaler) {
-  TIMx->PSC = Prescaler;
-}
 void ATIM_SetAutoReload(ATIM_TypeDef *TIMx, uint32_t AutoReload) {
   TIMx->ARR = AutoReload; //Not all timers are 32 bit, some are 16 bit
 }
@@ -268,7 +265,9 @@ void TIM_EnableCounter(uint8_t tim) {
   }
 }
 void GPTIMA_DutyCycle(GPTIMA_TypeDef *TIMx, uint8_t channel, uint32_t DutyCycle) {
-  //The duty cycle is not a percentage but a value between 0 and the auto-reload value
+  //The duty cycle is not a percentage but a value between 0 and the auto-reload value\
+  //Some timers are 16 bit so the max value is 65535
+  //Some timers are 32 bit so the max value is 4294967295
   switch (channel) {
     case 1:
       TIMx->CCR1 = DutyCycle;
@@ -346,7 +345,7 @@ Available modes:
 6: PWM mode 1 - In upcounting, channel 1 is active as long as TIMx_CNT<TIMx_CCR1
 else inactive. In downcounting, channel 1 is inactive (OC1REF=‘0) as long as
 TIMx_CNT>TIMx_CCR1 else active (OC1REF=1).
-111: PWM mode 2 - In upcounting, channel 1 is inactive as long as TIMx_CNT<TIMx_CCR1
+7: PWM mode 2 - In upcounting, channel 1 is inactive as long as TIMx_CNT<TIMx_CCR1
 else active. In downcounting, channel 1 is active (OC1REF=‘1) as long as
 TIMx_CNT>TIMx_CCR1 else inactive (OC1REF=0).
 */

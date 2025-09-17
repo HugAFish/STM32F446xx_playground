@@ -6,6 +6,9 @@ https://www.st.com/resource/en/reference_manual/rm0390-stm32f446xx-advanced-armb
 and
 https://www.st.com/resource/en/datasheet/stm32f446mc.pdf
 
+For the NUCLEO board I am using:
+https://os.mbed.com/platforms/ST-Nucleo-F446RE/
+
 Thank you to Artful Bytes on YouTube, his "How a Microcontrller srtats" video was a huge help. If you want to check it out, you can at https://www.youtube.com/watch?v=MhOba73z-dQ&t=1383s 
 
 note to self: 

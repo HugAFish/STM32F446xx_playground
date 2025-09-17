@@ -330,4 +330,21 @@ typedef struct {
 #define TIM6 ((BTIM_TypeDef *) TIM6_BASE)
 #define TIM7 ((BTIM_TypeDef *) TIM7_BASE)
 
+//usart
+typedef struct {
+    volatile uint32_t SR; // Status Register 0x00
+    volatile uint32_t DR; // Data Register 0x04
+    volatile uint32_t BRR; // Baud Rate Register 0x08
+    volatile uint32_t CR1; // Control Register 1 0x0C
+    volatile uint32_t CR2; // Control Register 2 0x10
+    volatile uint32_t CR3; // Control Register 3 0x14
+    volatile uint32_t GTPR; // Guard Time and Prescaler Register 0x18
+} USART_TypeDef;
+#define USART1 ((USART_TypeDef *) USART1_BASE)
+#define USART2 ((USART_TypeDef *) USART2_BASE)
+#define USART3 ((USART_TypeDef *) USART3_BASE)
+#define UART4 ((USART_TypeDef *) UART4_BASE)
+#define UART5 ((USART_TypeDef *) UART5_BASE)
+#define USART6 ((USART_TypeDef *) USART6_BASE)
+
 #endif // STM32F446XX_MAP_H
