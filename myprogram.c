@@ -1,4 +1,5 @@
 #include "stm32f446xx_helper.h"
+
 int main(void) {
     int delay;
     RCC_EnableGPIO('A');  // Enable GPIOA clock

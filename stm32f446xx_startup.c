@@ -42,7 +42,12 @@ void isr_hardfault(void) {
     // to catch hardfaults
 }
 
-void isr_
+void isr_TIM2(void) {
+    // Toggle PA5
+    GPIOA->ODR ^= (1 << 5);
+    // Clear the interrupt flag
+    TIM2->SR &= ~(1 << 0); // Clear UIF flag
+}
 
 typedef void (*isr_t)(void);
 #define IVT_SIZE 112U
