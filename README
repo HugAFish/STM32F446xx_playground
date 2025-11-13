@@ -1,3 +1,9 @@
+A little about this project and me:
+As of starting this project, I am a 2nd year electrical engineering student.
+I started this project becuase I thought it would be fun to mess around something that is powerfull enough to handle any task I would want but low level enough that I can get a proper grasp of things
+The reason I chose the stm32f446re Nucleo board is mainy due too the on board st-link V2-1 as I plan to use what I learn in this playground to make more intersting projects
+Any resources I use will be mentioned and linked in this README as well as sofware and terminal lines
+
 This is a work in progress!!
 This is a completely(almost) from the ground up. 
 If you endup seeing this and know how to do something better, please let me know.
@@ -11,7 +17,14 @@ https://os.mbed.com/platforms/ST-Nucleo-F446RE/
 
 Thank you to Artful Bytes on YouTube, his "How a Microcontrller srtats" video was a huge help. If you want to check it out, you can at https://www.youtube.com/watch?v=MhOba73z-dQ&t=1383s 
 
+Software used:
+Visual Studio Code: https://code.visualstudio.com/* (main ide)
+GNU Compiler of ARM: https://developer.arm.com/downloads/-/gnu-rm* (arm-none-eabi-gcc)
+ST-Link: https://github.com/stlink-org/stlink/tree/testing/inc* (sofware to interacte with the on board programer)
+
+*avalible via the AUR or other repositories
+
 note to self: 
 to compile startup: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -c stm32f446xx_startup.c -o startup.o
 to complie main: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -c myprogram.c -o main.o
-to build project: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -g -O0   startup.o main.o   -T stm32f446xx_linker.ld   -nostartfiles -Wl,-Map=output.map   -o firmware.elf (switch the .elf to .bin and remove -g for final build)
+to build project: arm-none-eabi-gcc -mcpu=cortex-m4 -mthumb -g -O0   startup.o main.o helper.o   -T stm32f446xx_linker.ld   -nostartfiles -Wl,-Map=output.map   -o firmware.elf (switch the .elf to .bin and remove -g for final build)

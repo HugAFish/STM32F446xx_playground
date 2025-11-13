@@ -2,7 +2,7 @@
 #include <stdint.h>
 #ifndef STM32F446XX_MAP_H
 #define STM32F446XX_MAP_H
-//WARNING!! I don't know what I am doing, use at own your risk!!
+//!!WARNING!! this is a fun experiment and learning environment, use at own your risk!!
 //this may or may !!NOT!! be comprehensive, feel free to add if you get your hands on this
 //this is a memory map specific for the STM32F446 microcontroller
 //always refer to the reference manual for detailed information

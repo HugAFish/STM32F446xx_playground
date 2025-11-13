@@ -16,7 +16,7 @@ int main(void) {
       if (GPIO_ReadPin(GPIOC, 13)) {  // If PC13 is high
         GPIO_SetPin(GPIOA, 5, true);  // Set PA5 high
     }
-    else {
+      else {
       GPIO_SetPin(GPIOA, 5, false);  // Set PA5 low
     }
   }

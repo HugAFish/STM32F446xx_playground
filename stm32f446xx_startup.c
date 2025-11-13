@@ -1,7 +1,5 @@
 #include "stm32f446xx_map.h"
 
-
-
 extern unsigned int _stack;
 extern unsigned int _sdata;
 extern unsigned int _edata;
@@ -35,7 +33,7 @@ void isr_reset(void){
 }
 
 void isr_hardfault(void) {
-        RCC->AHB1ENR |= (1 << 0);        // Enable clock for GPIOA
+    RCC->AHB1ENR |= (1 << 0);        // Enable clock for GPIOA
     GPIOA->MODER |= (1 << (2 * 5));  // Set PA5 as output
     GPIOA->ODR |= (1 << 5);           // Set PA5 high
     while (1);

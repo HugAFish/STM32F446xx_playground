@@ -1,7 +1,7 @@
 #include "stm32f446xx_helper.h"
 /*
 Just like everything else that may be published:
-!!WARNING!! I don't know what I am doing, use at own your risk!!
+!!WARNING!! this is a fun experiment and learning environment, use at own your risk!!
 this is a helper library for the STM32F446 microcontroller
 it MAY or MAY NOT be comprehensive and fully correct
 */
@@ -10,14 +10,47 @@ High level abstraction functions for peripherals
 */
 
 //UART
-void UART_SendString(USART_TypeDef *USARTx, char *str) {
-  while (*str) {
+/*
+Sends a string over USART
+takes a pointer to the first character of the string and the length of the string
+*/
+void USART_SendString(USART_TypeDef *USARTx, char str[], uint16_t length) {
+  for (uint16_t i = 0; i < length; i++) {
     while (!(USARTx->SR & (1 << 7))); // wait TXE
-    USARTx->DR = *str++;
+    USARTx->DR = str[i];
+  }
   }
 
-}
+/*
+Takes a value and sends it over USART as a string
+max_magnitude is the maximum amount of digits the value can have
+for example, if the value is between -999 and 999, max_magnitude is 3
+if the value is between -9999 and 9999, max_magnitude is 4
 
+*/
+void USART_SendValue(USART_TypeDef *USARTx, int value, int max_magnitude) {// this can be scaled up but that would take forever to prosses on these chips
+    const int MAGNITUDE[] = {1, 10, 100, 1000, 10000, 100000}; //short cut for powers of ten
+  if (max_magnitude < 0 || max_magnitude > 5) {
+    return; // out of range
+  }
+  if (value == 0) {
+    USART_WaitSendByte(USARTx, '0');
+    return;
+  }
+    if (value < 0) {
+    USART_WaitSendByte(USARTx, '-');
+    value = -value;
+  }
+  for (int i = max_magnitude; i >= 0; i--) {
+    int divisor = 1;
+    for (int j = 0; j < i; j++) {
+      divisor *= 10;
+    }
+    int digit = (value / divisor);
+    USART_WaitSendByte(USARTx, '0' + digit);
+    value -= digit * divisor;
+  }
+}
 
 
 
@@ -511,6 +544,7 @@ void USART_WaitSendByte(USART_TypeDef *USARTx, uint8_t Data) {
   while (!(USARTx->SR & (1 << 7))); // Wait until TXE (Transmit data register empty) is set
   USARTx->DR = Data; // Send data
 }
+
 
 /*
 Send a byte of data over USART
