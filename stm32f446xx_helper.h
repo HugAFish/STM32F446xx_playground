@@ -1,6 +1,5 @@
 #ifndef STM32F446XX_HELPER_H
 #define STM32F446XX_HELPER_H
-
 #include "stm32f446xx_map.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -13,7 +12,7 @@ it MAY or MAY NOT be comprehensive and fully correct
 */
 
 // UART
-void USART_SendString(USART_TypeDef *USARTx, char str[], uint16_t length);
+void USART_SendString(USART_TypeDef *USARTx, char *str);
 void USART_SendValue(USART_TypeDef *USARTx, int value, int max_magnitude);
 
 // GPIO
@@ -35,6 +34,7 @@ void GPTIMA_DutyCycle(GPTIMA_TypeDef *TIMx, uint8_t channel, uint32_t DutyCycle)
 void GPTIMA_ResetCounter(GPTIMA_TypeDef *TIMx);
 void GPTIMA_Direction(GPTIMA_TypeDef *TIMx, uint8_t Mode, uint8_t Direction);
 void GPTIMA_OutputMode(GPTIMA_TypeDef *TIMx, uint8_t channel, uint8_t Mode);
+void GPTIMA_EnableStart(GPTIMA_TypeDef *TIMx, int channel);
 
 // General purpose timer group B (GPTIMB)
 void GPTIMB_SetPrescaler(GPTIMB_TypeDef *TIMx, uint32_t Prescaler);
@@ -50,6 +50,7 @@ void BTIM_ARBuffer(BTIM_TypeDef *TIMx, bool Enable);
 
 // Timer counter enable function (works for multiple timers)
 void TIM_EnableCounter(uint8_t tim);
+
 
 // USART
 void USART_SetBaud(USART_TypeDef *USARTx, uint32_t BaudRate, uint32_t PCLK);

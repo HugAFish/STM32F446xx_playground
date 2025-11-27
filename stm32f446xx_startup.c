@@ -1,4 +1,5 @@
 #include "stm32f446xx_map.h"
+#include "stm32f446xx_isr.h"
 
 extern unsigned int _stack;
 extern unsigned int _sdata;
@@ -6,7 +7,7 @@ extern unsigned int _edata;
 extern unsigned int _sbss;
 extern unsigned int _ebss;
 extern unsigned int _sidata;
-extern int main(void);
+int main(void);
 
 void bss_cleanup(void){
     unsigned int *p = &_sbss;
@@ -40,13 +41,6 @@ void isr_hardfault(void) {
     // to catch hardfaults
 }
 
-void isr_TIM2(void) {
-    // Toggle PA5
-    GPIOA->ODR ^= (1 << 5);
-    // Clear the interrupt flag
-    TIM2->SR &= ~(1 << 0); // Clear UIF flag
-}
-
 typedef void (*isr_t)(void);
 #define IVT_SIZE 112U
 __attribute__((used, section(".isr_vector")))
@@ -55,6 +49,13 @@ static const isr_t vector_table[IVT_SIZE] = {
     isr_reset,
     0,
     isr_hardfault,
-    [44] = isr_TIM2,    //Todo: Add other ISRs here, 
+    [22] = EXTI0_ISR,   //Todo: Enable EXTI0 to the nucleo user button to test
+    [23] = EXTI1_ISR,
+    [24] = EXTI2_ISR,
+    [25] = EXTI3_ISR,
+    [26] = EXTI4_ISR,
+    [39] = EXTI9_5_ISR,
+    [56] = EXTI15_10_ISR,
+    [44] = TIM2_ISR,    //Todo: Add other ISRs here, 
     
 };

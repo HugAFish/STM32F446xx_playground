@@ -10,15 +10,17 @@ High level abstraction functions for peripherals
 */
 
 //UART
+
+
 /*
 Sends a string over USART
 takes a pointer to the first character of the string and the length of the string
 */
-void USART_SendString(USART_TypeDef *USARTx, char str[], uint16_t length) {
-  for (uint16_t i = 0; i < length; i++) {
-    while (!(USARTx->SR & (1 << 7))); // wait TXE
-    USARTx->DR = str[i];
-  }
+void USART_SendString(USART_TypeDef *USARTx, char *str) {
+    while (*str != '\0') {
+        USART_WaitSendByte(USARTx, *str++);
+        str++;
+    }
   }
 
 /*
@@ -228,7 +230,7 @@ void RCC_EnableUSART(int usart) {
 
 /* universal timer functions 
 this section is going to be seperated due to the timers having different register layouts
-I have desided to call the advanced timers ATIM and the general purpose timers GPTIMA or GPTIMB and teh basic timers BTIM
+I have chosen to call the advanced timers ATIM and the general purpose timers GPTIMA or GPTIMB and teh basic timers BTIM
 Advanced Timers (ATIM) are TIM1 and TIM8
 General Purpose Timers (GPTIMA) A are TIM2 to TIM5
 General Purpose Timers (GPTIMB) B are TIM9 to TIM14
@@ -297,8 +299,8 @@ void BTIM_ARBuffer(BTIM_TypeDef *TIMx, bool Enable) {
 }
 
 //Enable the counter for the specified timer
-void TIM_EnableCounter(uint8_t tim) {
-  switch (tim) {
+void TIM_EnableCounter(uint8_t timer) {
+  switch (timer) {
 	case 1:
 	  RCC->APB2ENR |= (1 << 0);
 	  TIM1->CR1 |= 1;
@@ -360,6 +362,7 @@ void TIM_EnableCounter(uint8_t tim) {
   }
 }
 
+
 //The duty cycle is not a percentage but a value between 0 and the auto-reload value\
 //Some timers are 16 bit so the max value is 65535
 //Some timers are 32 bit so the max value is 4294967295
@@ -388,6 +391,11 @@ This function must be called after the the timer is setup to properly work
 */
 void GPTIMA_ResetCounter(GPTIMA_TypeDef *TIMx) {
   TIMx->EGR |= 1;
+}
+
+void GPTIMA_EnableStart(GPTIMA_TypeDef *TIMx, int channel){
+  TIMx->CR1 |= 1;
+  TIMx->CCER |= (1 << 4*(channel - 1));
 }
 
 /*

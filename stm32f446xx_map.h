@@ -9,6 +9,39 @@
 //there is no safety built into the header
 
 
+//ADC
+typedef struct {
+    volatile uint32_t SR; // Status Register 0x00
+    volatile uint32_t CR1; // Control Register 1 0x04
+    volatile uint32_t CR2; // Control Register 2 0x08
+    volatile uint32_t SMPR1; // Sample Time Register 1 0x0C
+    volatile uint32_t SMPR2; // Sample Time Register 2 0x10
+    volatile uint32_t JOFR1; // Injected Channel Data Offset Register 1 0x14
+    volatile uint32_t JOFR2; // Injected Channel Data Offset Register 2 0x18
+    volatile uint32_t JOFR3; // Injected Channel Data Offset Register 3 0x1C
+    volatile uint32_t JOFR4; // Injected Channel Data Offset Register 4 0x20
+    volatile uint32_t HTR; // Watchdog Higher Threshold Register 0x24
+    volatile uint32_t LTR; // Watchdog Lower Threshold Register 0x28
+    volatile uint32_t SQR1; // Regular Sequence Register 1 0x2C
+    volatile uint32_t SQR2; // Regular Sequence Register 2 0x30
+    volatile uint32_t SQR3; // Regular Sequence Register 3 0x34
+    volatile uint32_t JSQR; // Injected Sequence Register 0x38
+    volatile uint32_t JDR1; // Injected Data Register 1 0x3C
+    volatile uint32_t JDR2; // Injected Data Register 2 0x40
+    volatile uint32_t JDR3; // Injected Data Register 3 0x44
+    volatile uint32_t JDR4; // Injected Data Register 4 0x48
+    volatile uint32_t DR; // Regular Data Register 0x4C
+} ADC_TypeDef;
+#define ADC1 ((ADC_TypeDef *) (ADC_BASE + 0x000))
+#define ADC2 ((ADC_TypeDef *) (ADC_BASE + 0x100))
+#define ADC3 ((ADC_TypeDef *) (ADC_BASE + 0x200))
+//ADC common registers
+typedef struct {
+    volatile uint32_t CSR; // Common Status Register 0x00
+    volatile uint32_t CCR; // Common Control Register 0x04
+    volatile uint32_t CDR; // Common Regular Data Register for Dual and Triple modes 0x08
+} ADC_Common_TypeDef;
+#define ADC_COMMON ((ADC_Common_TypeDef *) ADC_BASE + 0x300)
 //DCMI
 typedef struct {
 
