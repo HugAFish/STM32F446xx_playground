@@ -1,5 +1,6 @@
 #include "stm32f446xx_map.h"
 #include "stm32f446xx_isr.h"
+#include "stm32f446xx_helper.h"
 
 extern unsigned int _stack;
 extern unsigned int _sdata;
@@ -34,11 +35,19 @@ void isr_reset(void){
 }
 
 void isr_hardfault(void) {
+    int delay = 0;
     RCC->AHB1ENR |= (1 << 0);        // Enable clock for GPIOA
     GPIOA->MODER |= (1 << (2 * 5));  // Set PA5 as output
     GPIOA->ODR |= (1 << 5);           // Set PA5 high
     while (1);
-    // to catch hardfaults
+    GPIO_SetPin(GPIOA, 5, true);  // Set PA5 low;
+    for (int i = 0; i < 1000000; i++) {
+        delay++;
+    }
+    GPIO_SetPin(GPIOA, 5, false);  // Set PA5 low;
+    for (int i = 0; i < 1000000; i++) {
+        delay++;
+    }
 }
 
 typedef void (*isr_t)(void);
@@ -49,6 +58,7 @@ static const isr_t vector_table[IVT_SIZE] = {
     isr_reset,
     0,
     isr_hardfault,
+    /*
     [22] = EXTI0_ISR,   //Todo: Enable EXTI0 to the nucleo user button to test
     [23] = EXTI1_ISR,
     [24] = EXTI2_ISR,
@@ -57,5 +67,5 @@ static const isr_t vector_table[IVT_SIZE] = {
     [39] = EXTI9_5_ISR,
     [56] = EXTI15_10_ISR,
     [44] = TIM2_ISR,    //Todo: Add other ISRs here, 
-    
+    */
 };

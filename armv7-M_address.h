@@ -2,6 +2,7 @@
 #define ARMV7M_ADDRESS_H
 // Basic peripheral base addresses for ARMv7-M core (Cortex-M3/M4/M7)
 //System Control and ID Registers
+/*
 #define CPUID_BASE     0xE000ED00UL
 #define ICSR_BASE      0xE000ED04UL
 #define VTOR_BASE      0xE000ED08UL
@@ -30,4 +31,10 @@
 #define NVIC_ICPR_BASE 0xE000E280UL
 #define NVIC_IABR_BASE 0xE000E300UL
 #define NVIC_IPR_BASE  0xE000E400UL
+*/
+//System Control Space
+#define SYSCON_BASE   0xE000E000UL
+//FPU
+#define FPU_BASE      0xE000EF34UL
+
 #endif // ARMV7M_ADDRESS_H
