@@ -1,40 +1,27 @@
 #ifndef ARMV7M_ADDRESS_H
 #define ARMV7M_ADDRESS_H
 // Basic peripheral base addresses for ARMv7-M core (Cortex-M3/M4/M7)
-//System Control and ID Registers
-/*
-#define CPUID_BASE     0xE000ED00UL
-#define ICSR_BASE      0xE000ED04UL
-#define VTOR_BASE      0xE000ED08UL
-#define AIRCR_BASE     0xE000ED0CUL
-#define SCR_BASE       0xE000ED10UL
-#define CCR_BASE       0xE000ED14UL
-#define SHPR1_BASE     0xE000ED18UL
-#define SHPR2_BASE     0xE000ED1CUL
-#define SHPR3_BASE     0xE000ED20UL
-#define SHCSR_BASE     0xE000ED24UL
-#define CFSR_BASE      0xE000ED28UL
-#define HFSR_BASE      0xE000ED2CUL
-#define DFSR_BASE      0xE000ED30UL
-#define MMFAR_BASE     0xE000ED34UL
-#define BFAR_BASE      0xE000ED38UL
-#define AFSR_BASE      0xE000ED3CUL
-#define CPACR_BASE     0xE000ED88UL
-//FPU
-#define FPCCR_BASE    0xE000EF34UL
-#define FPCAR_BASE    0xE000EF38UL
-#define FPDSCR_BASE   0xE000EF3CUL
+//ICT
+#define ICT_BASE      0xE000E000UL
+//SysTick
+#define SYSTICK_BASE  0xE000E010UL
 //NVIC
-#define NVIC_ISER_BASE 0xE000E100UL
-#define NVIC_ICER_BASE 0xE000E180UL
-#define NVIC_ISPR_BASE 0xE000E200UL
-#define NVIC_ICPR_BASE 0xE000E280UL
-#define NVIC_IABR_BASE 0xE000E300UL
-#define NVIC_IPR_BASE  0xE000E400UL
-*/
-//System Control Space
-#define SYSCON_BASE   0xE000E000UL
+#define NVIC_BASE     0xE000E100UL
+//MPU
+#define MPU_BASE      0xE000ED90UL
+//SCB
+#define SCB_BASE      0xE000ED00UL
 //FPU
 #define FPU_BASE      0xE000EF34UL
+//Debug
+#define DEBUG_BASE    0xE000EDF0UL
+//SWTRIG
+#define SWTRIG_BASE   0xE000EF00UL
+//Cache and branch predictor
+#define CACHE_BASE    0xE000EF50UL
+//ImplementationDefined
+#define IMP_BASE      0xE000EF90UL
+//Microcontroller-specific ID space
+#define MCUID_BASE    0xE000EFD0UL
 
 #endif // ARMV7M_ADDRESS_H

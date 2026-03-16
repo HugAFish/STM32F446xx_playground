@@ -72,9 +72,9 @@ as of now, alternative functions dont have proper abstraction
 // Set or reset the pin via a buffered set/reset register
 void GPIO_SetPin(GPIO_TypeDef *GPIOx, uint32_t PinNumber, bool Pin) {
   if (Pin) {
-    GPIOx->BSRR |= (1 << PinNumber);
+    GPIOx->BSRR = (1 << PinNumber);
   } else {
-    GPIOx->BSRR |= (1 << (PinNumber + 16));
+    GPIOx->BSRR = (1 << (PinNumber + 16));
   }
 }
 

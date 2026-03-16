@@ -12,3 +12,4 @@
 *.tmp
 *.save
 *_backup.*
+firmware_dump.txt

@@ -1,5 +1,7 @@
 #ifndef STM32F446XX_HELPER_H
 #define STM32F446XX_HELPER_H
+#define HIGH true
+#define LOW false
 #include "stm32f446xx_map.h"
 #include <stdint.h>
 #include <stdbool.h>

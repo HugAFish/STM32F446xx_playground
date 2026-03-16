@@ -1,6 +1,4 @@
-#include "stm32f446xx_map.h"
-#include "stm32f446xx_isr.h"
-#include "stm32f446xx_helper.h"
+#include "stm32f446xx.h"
 
 extern unsigned int _stack;
 extern unsigned int _sdata;
@@ -8,7 +6,16 @@ extern unsigned int _edata;
 extern unsigned int _sbss;
 extern unsigned int _ebss;
 extern unsigned int _sidata;
-int main(void);
+extern int main(void);
+extern void NMI_ISR(void);
+extern void EXTI0_ISR(void);
+extern void EXTI1_ISR(void);
+extern void EXTI2_ISR(void);
+extern void EXTI3_ISR(void);
+extern void EXTI4_ISR(void);
+extern void EXTI9_5_ISR(void);
+extern void TIM2_ISR(void);
+extern void EXTI15_10_ISR(void);
 
 void bss_cleanup(void){
     unsigned int *p = &_sbss;
@@ -40,14 +47,6 @@ void isr_hardfault(void) {
     GPIOA->MODER |= (1 << (2 * 5));  // Set PA5 as output
     GPIOA->ODR |= (1 << 5);           // Set PA5 high
     while (1);
-    GPIO_SetPin(GPIOA, 5, true);  // Set PA5 low;
-    for (int i = 0; i < 1000000; i++) {
-        delay++;
-    }
-    GPIO_SetPin(GPIOA, 5, false);  // Set PA5 low;
-    for (int i = 0; i < 1000000; i++) {
-        delay++;
-    }
 }
 
 typedef void (*isr_t)(void);
@@ -56,16 +55,22 @@ __attribute__((used, section(".isr_vector")))
 static const isr_t vector_table[IVT_SIZE] = {
     (isr_t)(&_stack),
     isr_reset,
+    NMI_ISR,
+    HardFault_Handler,
+    MemManage_Handler,
+    BusFault_Handler,
+    UsageFault_Handler,
+    0, 0, 0, 0,
+    SVC_Handler,
+    DEBUG_ISR,
     0,
-    isr_hardfault,
-    /*
+    PENDSV_ISR,
     [22] = EXTI0_ISR,   //Todo: Enable EXTI0 to the nucleo user button to test
     [23] = EXTI1_ISR,
     [24] = EXTI2_ISR,
     [25] = EXTI3_ISR,
     [26] = EXTI4_ISR,
     [39] = EXTI9_5_ISR,
-    [56] = EXTI15_10_ISR,
-    [44] = TIM2_ISR,    //Todo: Add other ISRs here, 
-    */
+    [56] = EXTI15_10_ISR, //The ARMv7-M cpu supports just under 500 interrupts so why does st not use them
+    [44] = TIM2_ISR,    //Todo: Add other ISRs here
 };
